@@ -1,19 +1,39 @@
 package com.example.web_action_house.model;
 
 public class Category {
-        private int id;
-        private String nombre;
+    private int categoryId;
+    private String title;
+    private String description;
 
-        public Category() {}
+    public Category() {}
 
-        public Category(int id, String nombre) {
-            this.id = id;
-            this.nombre = nombre;
-        }
-
-        public int getId() { return id; }
-        public void setId(int id) { this.id = id; }
-
-        public String getNombre() { return nombre; }
-        public void setNombre(String nombre) { this.nombre = nombre; }
+    public Category(int categoryId, String title, String description) {
+        this.categoryId = categoryId;
+        this.title = title;
+        this.description = description;
     }
+
+    public int getCategoryId() {
+        return categoryId;
+    }
+
+    public void setCategoryId(int categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+}

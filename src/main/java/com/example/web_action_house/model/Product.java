@@ -1,59 +1,146 @@
 package com.example.web_action_house.model;
 
-import java.time.LocalDate;
-
 public class Product {
-    private int id;
-    private String nombre;
-    private String descripcion;
-    private String urlImagen;
-    private double pujaInicial;
-    private double pujaActual;
-    private LocalDate fechaFinSubasta;
+    private int productId;
+    private String title;
+    private String description;
+    private String imgUrl;
+    private double startingBid;
+    private double currentBid;
+    private double closingBid;
+    private Category category;
+    private Auction auction;
 
-    private Category categoria;
-    private User usuarioSubasta; // Cliente que subasta el producto
-
+    // Constructor vacío
     public Product() {}
 
-    public Product(int id, String nombre, String descripcion, String urlImagen, double pujaInicial,
-                   double pujaActual, LocalDate fechaFinSubasta, Category categoria, User usuarioSubasta) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.urlImagen = urlImagen;
-        this.pujaInicial = pujaInicial;
-        this.pujaActual = pujaActual;
-        this.fechaFinSubasta = fechaFinSubasta;
-        this.categoria = categoria;
-        this.usuarioSubasta = usuarioSubasta;
+    // Constructor para crear producto desde el servlet (sin ID)
+    public Product(String title, String description, String imgUrl,
+                   double startingBid, double currentBid, double closingBid,
+                   Category category, Auction auction) {
+        this.title = title;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.startingBid = startingBid;
+        this.currentBid = currentBid;
+        this.closingBid = closingBid;
+        this.category = category;
+        this.auction = auction;
     }
 
-    // Getters y setters
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
+    // Constructor completo con objetos (incluye ID)
+    public Product(int productId, String title, String description, String imgUrl,
+                   double startingBid, double currentBid, double closingBid,
+                   Category category, Auction auction) {
+        this.productId = productId;
+        this.title = title;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.startingBid = startingBid;
+        this.currentBid = currentBid;
+        this.closingBid = closingBid;
+        this.category = category;
+        this.auction = auction;
+    }
 
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
+    // Constructor alternativo con auctionId como int (usado en DAOImpl)
+    public Product(int productId, String title, String description, String imgUrl,
+                   double startingBid, double currentBid, double closingBid,
+                   Category category, int auctionId) {
+        this.productId = productId;
+        this.title = title;
+        this.description = description;
+        this.imgUrl = imgUrl;
+        this.startingBid = startingBid;
+        this.currentBid = currentBid;
+        this.closingBid = closingBid;
+        this.category = category;
+        this.auction = new Auction();
+        this.auction.setAuctionId(auctionId);
+    }
 
-    public String getDescripcion() { return descripcion; }
-    public void setDescripcion(String descripcion) { this.descripcion = descripcion; }
+    // Getters y Setters
+    public int getProductId() {
+        return productId;
+    }
 
-    public String getUrlImagen() { return urlImagen; }
-    public void setUrlImagen(String urlImagen) { this.urlImagen = urlImagen; }
+    public void setProductId(int productId) {
+        this.productId = productId;
+    }
 
-    public double getPujaInicial() { return pujaInicial; }
-    public void setPujaInicial(double pujaInicial) { this.pujaInicial = pujaInicial; }
+    public String getTitle() {
+        return title;
+    }
 
-    public double getPujaActual() { return pujaActual; }
-    public void setPujaActual(double pujaActual) { this.pujaActual = pujaActual; }
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
-    public LocalDate getFechaFinSubasta() { return fechaFinSubasta; }
-    public void setFechaFinSubasta(LocalDate fechaFinSubasta) { this.fechaFinSubasta = fechaFinSubasta; }
+    public String getDescription() {
+        return description;
+    }
 
-    public Category getCategoria() { return categoria; }
-    public void setCategoria(Category categoria) { this.categoria = categoria; }
+    public void setDescription(String description) {
+        this.description = description;
+    }
 
-    public User getUsuarioSubasta() { return usuarioSubasta; }
-    public void setUsuarioSubasta(User usuarioSubasta) { this.usuarioSubasta = usuarioSubasta; }
+    public String getImgUrl() {
+        return imgUrl;
+    }
+
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
+    }
+
+    public double getStartingBid() {
+        return startingBid;
+    }
+
+    public void setStartingBid(double startingBid) {
+        this.startingBid = startingBid;
+    }
+
+    public double getCurrentBid() {
+        return currentBid;
+    }
+
+    public void setCurrentBid(double currentBid) {
+        this.currentBid = currentBid;
+    }
+
+    public double getClosingBid() {
+        return closingBid;
+    }
+
+    public void setClosingBid(double closingBid) {
+        this.closingBid = closingBid;
+    }
+
+    public Category getCategory() {
+        return category;
+    }
+
+    public void setCategory(Category category) {
+        this.category = category;
+    }
+
+    public Auction getAuction() {
+        return auction;
+    }
+
+    public void setAuction(Auction auction) {
+        this.auction = auction;
+    }
+
+    // Acceso indirecto al ID de la subasta
+    public int getAuctionId() {
+        return auction != null ? auction.getAuctionId() : 0;
+    }
+
+    public void setAuctionId(int auctionId) {
+        if (this.auction == null) {
+            this.auction = new Auction();
+        }
+        this.auction.setAuctionId(auctionId);
+    }
 }
