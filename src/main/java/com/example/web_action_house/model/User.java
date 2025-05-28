@@ -1,16 +1,17 @@
 package com.example.web_action_house.model;
 
 public class User {
-    private int id;
+    private int userid;
     private String username;
-    private String surname;
+    private String email;
+    private String password;
 
-    public int getId() {
-        return id;
+    public int getUserid() {
+        return userid;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setUserid(int userid) {
+        this.userid = userid;
     }
 
     public String getUsername() {
@@ -21,12 +22,20 @@ public class User {
         this.username = username;
     }
 
-    public String getSurname() {
-        return surname;
+    public String getEmail() {
+        return email;
     }
 
-    public void setSurname(String surname) {
-        this.surname = surname;
+    public void setEmail(String surname) {
+        this.email = surname;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }
 

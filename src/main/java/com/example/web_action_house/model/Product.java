@@ -3,30 +3,31 @@ package com.example.web_action_house.model;
 import java.time.LocalDate;
 
 public class Product {
-    private int id;
-    private String name;
+    private int productId;
+    private String title;
     private String description;
-    private String imageUrl;
-    private double startBid;
+    private String imgUrl;
+    private double startingBid;
     private double currentBid;
-    private LocalDate endDate;
+    private double closingBid;
+
     private Category category;
-    private User user;
+    private Auction auction;
 
-    public int getId() {
-        return id;
+    public int getProductId() {
+        return productId;
     }
 
-    public void setId(int id) {
-        this.id = id;
+    public void setProductId(int productId) {
+        this.productId = productId;
     }
 
-    public String getName() {
-        return name;
+    public String getTitle() {
+        return title;
     }
 
-    public void setName(String name) {
-        this.name = name;
+    public void setTitle(String title) {
+        this.title = title;
     }
 
     public String getDescription() {
@@ -37,52 +38,20 @@ public class Product {
         this.description = description;
     }
 
-    public String getImageUrl() {
-        return imageUrl;
+    public String getImgUrl() {
+        return imgUrl;
     }
 
-    public void setImageUrl(String imageUrl) {
-        this.imageUrl = imageUrl;
+    public void setImgUrl(String imgUrl) {
+        this.imgUrl = imgUrl;
     }
 
-    public double getStartBid() {
-        return startBid;
+    public double getStartingBid() {
+        return startingBid;
     }
 
-    public void setStartBid(double startBid) {
-        this.startBid = startBid;
+    public void setStartingBid(double startingBid) {
+        this.startingBid = startingBid;
     }
 
-    public double getCurrentBid() {
-        return currentBid;
-    }
-
-    public void setCurrentBid(double currentBid) {
-        this.currentBid = currentBid;
-    }
-
-    public LocalDate getEndDate() {
-        return endDate;
-    }
-
-    public void setEndDate(LocalDate endDate) {
-        this.endDate = endDate;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }
-

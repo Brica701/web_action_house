@@ -4,11 +4,12 @@ package com.example.web_action_house.dao;
 import com.example.web_action_house.model.Product;
 
 import java.util.List;
+import java.util.List;
 
 public interface ProductDAO {
-    List<Product> findAll();
-    void save(Product product);
-    List<Product> findByUsername(String username);
+    List<Product> findAllWithCategoryAndUser();
+    boolean insert(Product product);
     List<Object[]> countProductsByCategory();
-    Product findById(int id);
+    List<Product> searchByUsername(String username);
 }
+

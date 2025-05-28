@@ -7,151 +7,123 @@ import com.example.web_action_house.model.User;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import util.DBUtil;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.List;
 
 public class ProductDAOImpl implements ProductDAO {
-    private final Connection con;
-
-    public ProductDAOImpl() {
-        this.con = con;
-    }
 
     @Override
-    public List<Product> findAll() {
-        List<Product> products = new ArrayList<>();
+    public List<Product> findAllWithCategoryAndUser() {
+        List<Product> list = new ArrayList<>();
         String sql = """
-            SELECT p.*, c.id as cat_id, c.name as cat_name, u.id as u_id, u.username, u.surname
+            SELECT p.*, c.title AS category_title, u.username, a.end_date 
             FROM product p
-            JOIN category c ON p.category_id = c.id
-            JOIN user u ON p.user_id = u.id
+            JOIN category c ON p.category_id = c.category_id
+            LEFT JOIN auction a ON p.auction_id = a.auction_id
+            LEFT JOIN user u ON a.user_id = u.user_id
         """;
-        try (PreparedStatement st = con.prepareStatement(sql);
-             ResultSet rs = st.executeQuery()) {
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                Product p = new Product();
-                p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-                p.setDescription(rs.getString("description"));
-                p.setImageUrl(rs.getString("image_url"));
-                p.setStartBid(rs.getDouble("start_bid"));
-                p.setCurrentBid(rs.getDouble("current_bid"));
-                p.setEndDate(rs.getDate("end_date").toLocalDate());
-
-                Category c = new Category();
-                c.setId(rs.getInt("cat_id"));
-                c.setName(rs.getString("cat_name"));
-                p.setCategory(c);
-
-                User u = new User();
-                u.setId(rs.getInt("u_id"));
-                u.setUsername(rs.getString("username"));
-                u.setSurname(rs.getString("surname"));
-                p.setUser(u);
-
-                products.add(p);
+                Product product = new Product();
+                product.setProductId(rs.getInt("product_id"));
+                product.setTitle(rs.getString("title"));
+                product.setDescription(rs.getString("description"));
+                product.setImgUrl(rs.getString("img_url"));
+                product.setStartingBid(rs.getBigDecimal("starting_bid"));
+                product.setCurrentBid(rs.getBigDecimal("current_bid"));
+                product.setClosingBid(rs.getBigDecimal("closing_bid"));
+                product.setCategoryId(rs.getInt("category_id"));
+                product.setAuctionId(rs.getInt("auction_id"));
+                product.setCategoryTitle(rs.getString("category_title"));
+                product.setUsername(rs.getString("username"));
+                product.setAuctionEndDate(rs.getDate("end_date"));
+                list.add(product);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return products;
+        return list;
     }
 
     @Override
-    public void save(Product p) {
-        String sql = "INSERT INTO product (name, description, image_url, start_bid, current_bid, end_date, category_id, user_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-        try (PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, p.getName());
-            st.setString(2, p.getDescription());
-            st.setString(3, p.getImageUrl());
-            st.setDouble(4, p.getStartBid());
-            st.setDouble(5, p.getStartBid()); // current_bid = start_bid al inicio
-            st.setDate(6, Date.valueOf(p.getEndDate()));
-            st.setInt(7, p.getCategory().getId());
-            st.setInt(8, p.getUser().getId());
-            st.executeUpdate();
+    public boolean insert(Product product) {
+        String sql = "INSERT INTO product (title, description, img_url, starting_bid, category_id) VALUES (?, ?, ?, ?, ?)";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, product.getTitle());
+            stmt.setString(2, product.getDescription());
+            stmt.setString(3, product.getImgUrl());
+            stmt.setBigDecimal(4, product.getStartingBid());
+            stmt.setInt(5, product.getCategoryId());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
-    }
-
-    @Override
-    public List<Product> findByUsername(String username) {
-        List<Product> products = new ArrayList<>();
-        String sql = """
-            SELECT p.*, c.id as cat_id, c.name as cat_name, u.id as u_id, u.username, u.surname
-            FROM product p
-            JOIN category c ON p.category_id = c.id
-            JOIN user u ON p.user_id = u.id
-            WHERE u.username LIKE ?
-        """;
-        try (PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, "%" + username + "%");
-            ResultSet rs = st.executeQuery();
-            while (rs.next()) {
-                Product p = new Product();
-                p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-                p.setDescription(rs.getString("description"));
-                p.setImageUrl(rs.getString("image_url"));
-                p.setStartBid(rs.getDouble("start_bid"));
-                p.setCurrentBid(rs.getDouble("current_bid"));
-                p.setEndDate(rs.getDate("end_date").toLocalDate());
-
-                Category c = new Category();
-                c.setId(rs.getInt("cat_id"));
-                c.setName(rs.getString("cat_name"));
-                p.setCategory(c);
-
-                User u = new User();
-                u.setId(rs.getInt("u_id"));
-                u.setUsername(rs.getString("username"));
-                u.setSurname(rs.getString("surname"));
-                p.setUser(u);
-
-                products.add(p);
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return products;
     }
 
     @Override
     public List<Object[]> countProductsByCategory() {
-        List<Object[]> resumen = new ArrayList<>();
-        String sql = """
-            SELECT c.name, COUNT(*) as total
-            FROM product p
-            JOIN category c ON p.category_id = c.id
-            GROUP BY c.name
-        """;
-        try (PreparedStatement st = con.prepareStatement(sql);
-             ResultSet rs = st.executeQuery()) {
+        List<Object[]> list = new ArrayList<>();
+        String sql = "SELECT c.title, COUNT(*) AS count FROM product p JOIN category c ON p.category_id = c.category_id GROUP BY c.title";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql);
+             ResultSet rs = stmt.executeQuery()) {
             while (rs.next()) {
-                resumen.add(new Object[]{ rs.getString("name"), rs.getInt("total") });
+                Object[] row = new Object[2];
+                row[0] = rs.getString("title");
+                row[1] = rs.getInt("count");
+                list.add(row);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return resumen;
+        return list;
     }
 
     @Override
-    public Product findById(int id) {
-        String sql = "SELECT * FROM product WHERE id = ?";
-        try (PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Product p = new Product();
-                p.setId(rs.getInt("id"));
-                p.setName(rs.getString("name"));
-                return p;
+    public List<Product> searchByUsername(String username) {
+        List<Product> list = new ArrayList<>();
+        String sql = """
+            SELECT p.*, c.title AS category_title, u.username, a.end_date 
+            FROM product p
+            JOIN category c ON p.category_id = c.category_id
+            LEFT JOIN auction a ON p.auction_id = a.auction_id
+            LEFT JOIN user u ON a.user_id = u.user_id
+            WHERE u.username LIKE ?
+        """;
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, "%" + username + "%");
+            try (ResultSet rs = stmt.executeQuery()) {
+                while (rs.next()) {
+                    Product product = new Product();
+                    product.setProductId(rs.getInt("product_id"));
+                    product.setTitle(rs.getString("title"));
+                    product.setDescription(rs.getString("description"));
+                    product.setImgUrl(rs.getString("img_url"));
+                    product.setStartingBid(rs.getBigDecimal("starting_bid"));
+                    product.setCurrentBid(rs.getBigDecimal("current_bid"));
+                    product.setClosingBid(rs.getBigDecimal("closing_bid"));
+                    product.setCategoryId(rs.getInt("category_id"));
+                    product.setAuctionId(rs.getInt("auction_id"));
+                    product.setCategoryTitle(rs.getString("category_title"));
+                    product.setUsername(rs.getString("username"));
+                    product.setAuctionEndDate(rs.getDate("end_date"));
+                    list.add(product);
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return list;
     }
 }
+
 
 

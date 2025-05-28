@@ -1,69 +1,55 @@
 package com.example.web_action_house.dao;
 
-import java.sql.*;
-import java.time.LocalDate;
 
 import com.example.web_action_house.model.Auction;
-import com.example.web_action_house.model.Category;
-import com.example.web_action_house.model.Product;
-import com.example.web_action_house.model.User;
+import util.DBUtil;
+
+import java.sql.*;
 
 public class AuctionDAOImpl implements AuctionDAO {
-    private final Connection con;
-
-    public AuctionDAOImpl(Connection con) {
-        this.con = con;
-    }
 
     @Override
     public Auction findById(int id) {
-        String sql = """
-            SELECT a.*, u.id as uid, u.username, u.surname
-            FROM auction a
-            JOIN user u ON a.user_id = u.id
-            WHERE a.id = ?
-        """;
-        try (PreparedStatement st = con.prepareStatement(sql)) {
-            st.setInt(1, id);
-            ResultSet rs = st.executeQuery();
-            if (rs.next()) {
-                Auction a = new Auction();
-                a.setId(rs.getInt("id"));
-                a.setName(rs.getString("name"));
-                a.setDescription(rs.getString("description"));
-                a.setStartDate(rs.getDate("start_date").toLocalDate());
-                a.setEndDate(rs.getDate("end_date").toLocalDate());
-                a.setStatus(rs.getInt("status"));
-
-                User u = new User();
-                u.setId(rs.getInt("uid"));
-                u.setUsername(rs.getString("username"));
-                u.setSurname(rs.getString("surname"));
-                a.setUser(u);
-
-                return a;
+        Auction auction = null;
+        String sql = "SELECT * FROM auction WHERE auction_id = ?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            try (ResultSet rs = stmt.executeQuery()) {
+                if (rs.next()) {
+                    auction = new Auction();
+                    auction.setAuctionId(rs.getInt("auction_id"));
+                    auction.setUserid(rs.getInt("user_id"));
+                    auction.setTitle(rs.getString("title"));
+                    auction.setStatus(rs.getInt("status"));
+                    auction.setDescription(rs.getString("description"));
+                    auction.setStartDate(rs.getDate("start_date"));
+                    auction.setEndDate(rs.getDate("end_date"));
+                }
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return null;
+        return auction;
     }
 
-
     @Override
-    public void update(Auction a) {
-        String sql = "UPDATE auction SET name = ?, description = ?, start_date = ?, end_date = ?, status = ?, user_id = ? WHERE id = ?";
-        try (PreparedStatement st = con.prepareStatement(sql)) {
-            st.setString(1, a.getName());
-            st.setString(2, a.getDescription());
-            st.setDate(3, Date.valueOf(a.getStartDate()));
-            st.setDate(4, Date.valueOf(a.getEndDate()));
-            st.setInt(5, a.getStatus());
-            st.setInt(6, a.getUser().getId());
-            st.setInt(7, a.getId());
-            st.executeUpdate();
+    public boolean update(Auction auction) {
+        String sql = "UPDATE auction SET user_id=?, title=?, status=?, description=?, start_date=?, end_date=? WHERE auction_id=?";
+        try (Connection conn = DBUtil.getConnection();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, auction.getUserId());
+            stmt.setString(2, auction.getTitle());
+            stmt.setInt(3, auction.getStatus());
+            stmt.setString(4, auction.getDescription());
+            stmt.setDate(5, auction.getStartDate());
+            stmt.setDate(6, auction.getEndDate());
+            stmt.setInt(7, auction.getAuctionId());
+            return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             e.printStackTrace();
+            return false;
         }
     }
 }
+
