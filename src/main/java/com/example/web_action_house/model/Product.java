@@ -1,79 +1,32 @@
 package com.example.web_action_house.model;
 
+import java.time.LocalDate;
+
 public class Product {
-    private int productId;
-    private String title;
+    private int id;
+    private String name;
     private String description;
-    private String imgUrl;
-    private double startingBid;
+    private String imageUrl;
+    private double startBid;
     private double currentBid;
-    private double closingBid;
+    private LocalDate endDate;
     private Category category;
-    private Auction auction;
+    private User user;
 
-    // Constructor vacío
-    public Product() {}
-
-    // Constructor para crear producto desde el servlet (sin ID)
-    public Product(String title, String description, String imgUrl,
-                   double startingBid, double currentBid, double closingBid,
-                   Category category, Auction auction) {
-        this.title = title;
-        this.description = description;
-        this.imgUrl = imgUrl;
-        this.startingBid = startingBid;
-        this.currentBid = currentBid;
-        this.closingBid = closingBid;
-        this.category = category;
-        this.auction = auction;
+    public int getId() {
+        return id;
     }
 
-    // Constructor completo con objetos (incluye ID)
-    public Product(int productId, String title, String description, String imgUrl,
-                   double startingBid, double currentBid, double closingBid,
-                   Category category, Auction auction) {
-        this.productId = productId;
-        this.title = title;
-        this.description = description;
-        this.imgUrl = imgUrl;
-        this.startingBid = startingBid;
-        this.currentBid = currentBid;
-        this.closingBid = closingBid;
-        this.category = category;
-        this.auction = auction;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    // Constructor alternativo con auctionId como int (usado en DAOImpl)
-    public Product(int productId, String title, String description, String imgUrl,
-                   double startingBid, double currentBid, double closingBid,
-                   Category category, int auctionId) {
-        this.productId = productId;
-        this.title = title;
-        this.description = description;
-        this.imgUrl = imgUrl;
-        this.startingBid = startingBid;
-        this.currentBid = currentBid;
-        this.closingBid = closingBid;
-        this.category = category;
-        this.auction = new Auction();
-        this.auction.setAuctionId(auctionId);
+    public String getName() {
+        return name;
     }
 
-    // Getters y Setters
-    public int getProductId() {
-        return productId;
-    }
-
-    public void setProductId(int productId) {
-        this.productId = productId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -84,20 +37,20 @@ public class Product {
         this.description = description;
     }
 
-    public String getImgUrl() {
-        return imgUrl;
+    public String getImageUrl() {
+        return imageUrl;
     }
 
-    public void setImgUrl(String imgUrl) {
-        this.imgUrl = imgUrl;
+    public void setImageUrl(String imageUrl) {
+        this.imageUrl = imageUrl;
     }
 
-    public double getStartingBid() {
-        return startingBid;
+    public double getStartBid() {
+        return startBid;
     }
 
-    public void setStartingBid(double startingBid) {
-        this.startingBid = startingBid;
+    public void setStartBid(double startBid) {
+        this.startBid = startBid;
     }
 
     public double getCurrentBid() {
@@ -108,12 +61,12 @@ public class Product {
         this.currentBid = currentBid;
     }
 
-    public double getClosingBid() {
-        return closingBid;
+    public LocalDate getEndDate() {
+        return endDate;
     }
 
-    public void setClosingBid(double closingBid) {
-        this.closingBid = closingBid;
+    public void setEndDate(LocalDate endDate) {
+        this.endDate = endDate;
     }
 
     public Category getCategory() {
@@ -124,23 +77,12 @@ public class Product {
         this.category = category;
     }
 
-    public Auction getAuction() {
-        return auction;
+    public User getUser() {
+        return user;
     }
 
-    public void setAuction(Auction auction) {
-        this.auction = auction;
-    }
-
-    // Acceso indirecto al ID de la subasta
-    public int getAuctionId() {
-        return auction != null ? auction.getAuctionId() : 0;
-    }
-
-    public void setAuctionId(int auctionId) {
-        if (this.auction == null) {
-            this.auction = new Auction();
-        }
-        this.auction.setAuctionId(auctionId);
+    public void setUser(User user) {
+        this.user = user;
     }
 }
+

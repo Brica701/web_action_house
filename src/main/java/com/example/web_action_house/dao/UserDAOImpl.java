@@ -1,59 +1,36 @@
 package com.example.web_action_house.dao;
 
+
+
 import com.example.web_action_house.model.User;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UserDAOImpl implements UserDAO {
-    private Connection conn;
+    private final Connection con;
 
-    public UserDAOImpl(Connection conn) {
-        this.conn = conn;
-    }
-
-    @Override
-    public User findById(int id) {
-        String sql = "SELECT * FROM user WHERE user_id = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    User user = new User();
-                    user.setUserId(id);
-                    user.setUsername(rs.getString("username"));
-                    user.setEmail(rs.getString("email"));
-                    user.setPassword(rs.getString("password"));
-                    return user;
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+    public UserDAOImpl(Connection con) {
+        this.con = con;
     }
 
     @Override
     public List<User> findAll() {
-        List<User> users = new ArrayList<>();
-        String sql = "SELECT * FROM user";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        List<User> list = new ArrayList<>();
+        try (PreparedStatement st = con.prepareStatement("SELECT * FROM user");
+             ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
-                User user = new User();
-                user.setUserId(rs.getInt("user_id"));
-                user.setUsername(rs.getString("username"));
-                user.setEmail(rs.getString("email"));
-                user.setPassword(rs.getString("password"));
-                users.add(user);
+                User u = new User();
+                u.setId(rs.getInt("id"));
+                u.setUsername(rs.getString("username"));
+                u.setSurname(rs.getString("surname"));
+                list.add(u);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return users;
+        return list;
     }
 }
+

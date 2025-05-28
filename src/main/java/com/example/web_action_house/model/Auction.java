@@ -1,59 +1,30 @@
 package com.example.web_action_house.model;
 
-import java.sql.Date;
+import java.time.LocalDate;
 
 public class Auction {
-    private int auctionId;
-    private int userId;
-    private String title;
-    private int status;
+    private int id;
+    private String name;
     private String description;
-    private Date startDate;
-    private Date endDate;
+    private LocalDate startDate;
+    private LocalDate endDate;
+    private int status;
+    private User user;
 
-    public Auction() {}
-
-    public Auction(int auctionId, int userId, String title, int status, String description, Date startDate, Date endDate) {
-        this.auctionId = auctionId;
-        this.userId = userId;
-        this.title = title;
-        this.status = status;
-        this.description = description;
-        this.startDate = startDate;
-        this.endDate = endDate;
+    public int getId() {
+        return id;
     }
 
-    // Getters y Setters
-    public int getAuctionId() {
-        return auctionId;
+    public void setId(int id) {
+        this.id = id;
     }
 
-    public void setAuctionId(int auctionId) {
-        this.auctionId = auctionId;
+    public String getName() {
+        return name;
     }
 
-    public int getUserId() {
-        return userId;
-    }
-
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
-
-    public String getTitle() {
-        return title;
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-    }
-
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
+    public void setName(String name) {
+        this.name = name;
     }
 
     public String getDescription() {
@@ -64,19 +35,35 @@ public class Auction {
         this.description = description;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getEndDate() {
+    public LocalDate getEndDate() {
         return endDate;
     }
 
-    public void setEndDate(Date endDate) {
+    public void setEndDate(LocalDate endDate) {
         this.endDate = endDate;
+    }
+
+    public int getStatus() {
+        return status;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public User getUser() {
+        return user;
+    }
+
+    public void setUser(User user) {
+        this.user = user;
     }
 }

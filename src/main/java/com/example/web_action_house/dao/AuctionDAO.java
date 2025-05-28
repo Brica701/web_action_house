@@ -1,12 +1,11 @@
 package com.example.web_action_house.dao;
 
-import com.example.web_action_house.model.Auction;
 
-import java.util.List;
+import com.example.web_action_house.model.Auction;
 
 public interface AuctionDAO {
     Auction findById(int id);
-    List<Auction> findAll();
     void update(Auction auction);
 }
+
 

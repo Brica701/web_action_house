@@ -1,57 +1,33 @@
 package com.example.web_action_house.dao;
 
+
 import com.example.web_action_house.model.Category;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryDAOImpl implements CategoryDAO {
-    private Connection conn;
+    private final Connection con;
 
-    public CategoryDAOImpl(Connection conn) {
-        this.conn = conn;
+    public CategoryDAOImpl() {
+        this.con = con;
     }
 
     @Override
     public List<Category> findAll() {
-        List<Category> categorias = new ArrayList<>();
-        String sql = "SELECT * FROM category";
-        try (PreparedStatement ps = conn.prepareStatement(sql);
-             ResultSet rs = ps.executeQuery()) {
+        List<Category> list = new ArrayList<>();
+        try (PreparedStatement st = con.prepareStatement("SELECT * FROM category");
+             ResultSet rs = st.executeQuery()) {
             while (rs.next()) {
                 Category c = new Category();
-                c.setCategoryId(rs.getInt("category_id"));
-                c.setTitle(rs.getString("title"));
-                c.setDescription(rs.getString("description"));
-                categorias.add(c);
+                c.setId(rs.getInt("id"));
+                c.setName(rs.getString("name"));
+                list.add(c);
             }
         } catch (SQLException e) {
             e.printStackTrace();
         }
-        return categorias;
-    }
-
-    @Override
-    public Category findById(int id) {
-        String sql = "SELECT * FROM category WHERE category_id = ?";
-        try (PreparedStatement ps = conn.prepareStatement(sql)) {
-            ps.setInt(1, id);
-            try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) {
-                    return new Category(
-                            rs.getInt("category_id"),
-                            rs.getString("title"),
-                            rs.getString("description")
-                    );
-                }
-            }
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
-        return null;
+        return list;
     }
 }
